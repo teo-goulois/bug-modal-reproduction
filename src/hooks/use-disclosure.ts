@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useId, useState, useEffect, useRef } from "react";
 
 // Internal helper to handle callback refs

@@ -3,14 +3,11 @@
 import { useDisclosure } from "@/hooks/use-disclosure";
 import { Button } from "./ui/button";
 import { Modal } from "./ui/modal";
-import { useMutation } from "@tanstack/react-query";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import Link from "next/link";
 
-type Props = {};
-
-export const SharedModal = ({}: Props) => {
+export const SharedModal = () => {
   const { isOpen, onOpenChange, onClose } = useDisclosure();
   const pathname = usePathname();
 
