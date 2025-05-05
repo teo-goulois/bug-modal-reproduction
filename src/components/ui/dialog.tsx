@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 
-import { IconX } from "@intentui/icons";
 import type { HeadingProps } from "react-aria-components";
 import {
   Button as ButtonPrimitive,
@@ -11,10 +10,11 @@ import {
   Text,
 } from "react-aria-components";
 
-import { useMediaQuery } from "@/hooks/use-media-query";
-import { composeTailwindRenderProps } from "./primitive";
 import { twJoin, twMerge } from "tailwind-merge";
 import { Button, type ButtonProps } from "./button";
+import { composeTailwindRenderProps } from "./primitive";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { IconX } from "@intentui/icons";
 
 const Dialog = ({
   role = "dialog",
@@ -33,7 +33,7 @@ const Dialog = ({
   );
 };
 
-const DialogTrigger = (props: React.ComponentProps<typeof ButtonPrimitive>) => (
+const Trigger = (props: React.ComponentProps<typeof ButtonPrimitive>) => (
   <ButtonPrimitive {...props} />
 );
 
@@ -42,7 +42,7 @@ type DialogHeaderProps = React.HTMLAttributes<HTMLDivElement> & {
   description?: string;
 };
 
-const DialogHeader = ({ className, ...props }: DialogHeaderProps) => {
+const Header = ({ className, ...props }: DialogHeaderProps) => {
   const headerRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
@@ -73,12 +73,10 @@ const DialogHeader = ({ className, ...props }: DialogHeaderProps) => {
         className
       )}
     >
-      {props.title && <DialogTitle>{props.title}</DialogTitle>}
-      {props.description && (
-        <DialogDescription>{props.description}</DialogDescription>
-      )}
+      {props.title && <Title>{props.title}</Title>}
+      {props.description && <Description>{props.description}</Description>}
       {!props.title && typeof props.children === "string" ? (
-        <DialogTitle {...props} />
+        <Title {...props} />
       ) : (
         props.children
       )}
@@ -90,12 +88,7 @@ interface DialogTitleProps extends Omit<HeadingProps, "level"> {
   level?: 1 | 2 | 3 | 4;
   ref?: React.Ref<HTMLHeadingElement>;
 }
-const DialogTitle = ({
-  level = 2,
-  className,
-  ref,
-  ...props
-}: DialogTitleProps) => (
+const Title = ({ level = 2, className, ref, ...props }: DialogTitleProps) => (
   <Heading
     slot="title"
     level={level}
@@ -115,11 +108,7 @@ const DialogTitle = ({
 );
 
 type DialogDescriptionProps = React.ComponentProps<"div">;
-const DialogDescription = ({
-  className,
-  ref,
-  ...props
-}: DialogDescriptionProps) => (
+const Description = ({ className, ref, ...props }: DialogDescriptionProps) => (
   <Text
     slot="description"
     className={twMerge("text-muted-fg text-sm", className)}
@@ -129,7 +118,7 @@ const DialogDescription = ({
 );
 
 type DialogBodyProps = React.ComponentProps<"div">;
-const DialogBody = ({ className, ref, ...props }: DialogBodyProps) => (
+const Body = ({ className, ref, ...props }: DialogBodyProps) => (
   <div
     data-slot="dialog-body"
     ref={ref}
@@ -142,7 +131,7 @@ const DialogBody = ({ className, ref, ...props }: DialogBodyProps) => (
 );
 
 type DialogFooterProps = React.ComponentProps<"div">;
-const DialogFooter = ({ className, ...props }: DialogFooterProps) => {
+const Footer = ({ className, ...props }: DialogFooterProps) => {
   const footerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -179,7 +168,7 @@ const DialogFooter = ({ className, ...props }: DialogFooterProps) => {
   );
 };
 
-const DialogClose = ({
+const Close = ({
   className,
   intent = "outline",
   ref,
@@ -201,10 +190,7 @@ interface CloseButtonIndicatorProps extends Omit<ButtonProps, "children"> {
   isDismissable?: boolean | undefined;
 }
 
-const DialogCloseIcon = ({
-  className,
-  ...props
-}: CloseButtonIndicatorProps) => {
+const CloseIndicator = ({ className, ...props }: CloseButtonIndicatorProps) => {
   const isMobile = useMediaQuery("(max-width: 600px)");
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -229,6 +215,15 @@ const DialogCloseIcon = ({
   ) : null;
 };
 
+Dialog.Trigger = Trigger;
+Dialog.Header = Header;
+Dialog.Title = Title;
+Dialog.Description = Description;
+Dialog.Body = Body;
+Dialog.Footer = Footer;
+Dialog.Close = Close;
+Dialog.CloseIndicator = CloseIndicator;
+
 export type {
   DialogHeaderProps,
   DialogTitleProps,
@@ -237,14 +232,4 @@ export type {
   DialogDescriptionProps,
   CloseButtonIndicatorProps,
 };
-export {
-  Dialog,
-  DialogClose,
-  DialogTrigger,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogBody,
-  DialogFooter,
-  DialogCloseIcon,
-};
+export { Dialog };

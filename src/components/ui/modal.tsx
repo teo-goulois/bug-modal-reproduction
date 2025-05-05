@@ -15,14 +15,12 @@ import { type VariantProps, tv } from "tailwind-variants";
 
 import {
   Dialog,
-  DialogBody,
-  DialogClose,
-  DialogCloseIcon,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+  DialogBodyProps,
+  DialogFooterProps,
+  DialogHeaderProps,
+  DialogTitleProps,
 } from "./dialog";
+import { cn } from "@/utils";
 
 const Modal = (props: DialogTriggerProps) => {
   return <DialogTrigger {...props} />;
@@ -30,8 +28,8 @@ const Modal = (props: DialogTriggerProps) => {
 
 const modalOverlayStyles = tv({
   base: [
-    "fixed top-0 left-0 isolate z-50 h-(--visual-viewport-height) w-full",
-    "flex items-end justify-end bg-fg/15 text-center sm:block dark:bg-bg/40",
+    "fixed top-0 left-0 isolate z-[70] h-(--visual-viewport-height) w-full",
+    "flex items-end justify-end bg-fg/15 text-center sm:items-center sm:justify-center dark:bg-bg/40",
     "[--visual-viewport-vertical-padding:16px] sm:[--visual-viewport-vertical-padding:32px]",
   ],
   variants: {
@@ -100,7 +98,7 @@ const ModalContent = ({
   children,
   size,
   role = "dialog",
-  closeButton = true,
+  closeButton = false,
   ...props
 }: ModalContentProps) => {
   const isDismissable = isDismissableInternal ?? role !== "alertdialog";
@@ -136,7 +134,9 @@ const ModalContent = ({
           {(values) => (
             <>
               {typeof children === "function" ? children(values) : children}
-              {closeButton && <DialogCloseIcon isDismissable={isDismissable} />}
+              {closeButton && (
+                <Dialog.CloseIndicator isDismissable={isDismissable} />
+              )}
             </>
           )}
         </Dialog>
@@ -145,13 +145,55 @@ const ModalContent = ({
   );
 };
 
-const ModalTrigger = DialogTrigger;
-const ModalHeader = DialogHeader;
-const ModalTitle = DialogTitle;
-const ModalDescription = DialogDescription;
-const ModalFooter = DialogFooter;
-const ModalBody = DialogBody;
-const ModalClose = DialogClose;
+const ModalTrigger = Dialog.Trigger;
+const ModalDescription = Dialog.Description;
+const ModalClose = Dialog.Close;
+
+const ModalHeader = ({ children, ...props }: DialogHeaderProps & {}) => {
+  return (
+    <Dialog.Header
+      className={cn("border-b border-gray-200 p-5 ", props.className)}
+    >
+      {children}
+    </Dialog.Header>
+  );
+};
+
+const ModalTitle = ({ children, ...props }: DialogTitleProps) => {
+  return (
+    <Dialog.Title
+      {...props}
+      className={cn(
+        "flex items-center flex-row justify-between",
+        props.className
+      )}
+    >
+      {children} {/* {state.isOpen ? "isOpen" : "isClosed"} */}
+      <Dialog.CloseIndicator
+        isDismissable={true}
+        className="relative !right-0 !top-0 text-muted-fg"
+      />
+    </Dialog.Title>
+  );
+};
+
+const ModalFooter = ({ children, ...props }: DialogFooterProps) => {
+  return (
+    <Dialog.Footer
+      className={cn("p-5 border-t border-gray-200", props.className)}
+    >
+      {children}
+    </Dialog.Footer>
+  );
+};
+
+const ModalBody = ({ children, ...props }: DialogBodyProps) => {
+  return (
+    <Dialog.Body {...props} className={cn(" p-5 !pb-5", props.className)}>
+      {children}
+    </Dialog.Body>
+  );
+};
 
 Modal.Trigger = ModalTrigger;
 Modal.Header = ModalHeader;
