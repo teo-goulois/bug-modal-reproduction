@@ -7,10 +7,9 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { SearchField } from "./ui/search-field";
-import { Button as ButtonPrimitive } from "react-aria-components";
 
 export const SharedModal = () => {
-  const { isOpen, onOpenChange, onClose } = useDisclosure({
+  const { isOpen, onOpenChange, onOpen, onClose } = useDisclosure({
     onClose: () => {
       console.log(
         "[NavbarSearchModal] useDisclosure onClose callback triggered"
@@ -40,7 +39,7 @@ export const SharedModal = () => {
     <>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         {/* <Button>Open Modal</Button> */}
-        <ButtonPrimitive className="w-full max-w-lg">
+        <button className="w-full max-w-lg" onClick={onOpen}>
           <SearchField
             placeholder="Search"
             isReadOnly={true}
@@ -49,7 +48,7 @@ export const SharedModal = () => {
             value={query}
             onChange={(value) => setQuery(value)}
           />
-        </ButtonPrimitive>
+        </button>
         <Modal.Content>
           <Modal.Header>
             <Modal.Title>{`Bug reproduction (state:${
