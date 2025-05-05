@@ -191,7 +191,7 @@ const NavbarTrigger = ({
     <Button
       ref={ref}
       data-navbar-trigger="true"
-      intent="plain"
+      appearance="plain"
       aria-label={props["aria-label"] || "Toggle Navbar"}
       size="square-petite"
       className={className}
