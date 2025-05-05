@@ -4,21 +4,52 @@ import { useDisclosure } from "@/hooks/use-disclosure";
 import { Button } from "./ui/button";
 import { Modal } from "./ui/modal";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { SearchField } from "./ui/search-field";
+import { Button as ButtonPrimitive } from "react-aria-components";
 
 export const SharedModal = () => {
-  const { isOpen, onOpenChange, onClose } = useDisclosure();
+  const { isOpen, onOpenChange, onClose } = useDisclosure({
+    onClose: () => {
+      console.log(
+        "[NavbarSearchModal] useDisclosure onClose callback triggered"
+      );
+      setQuery("");
+    },
+    onOpen() {
+      console.log(
+        "[NavbarSearchModal] useDisclosure onOpen callback triggered"
+      );
+    },
+    onChange(open) {
+      console.log(
+        `[NavbarSearchModal] useDisclosure onChange callback triggered, isOpen: ${open}`
+      );
+    },
+  });
+  const [query, setQuery] = useState("");
+
   const pathname = usePathname();
 
   useEffect(() => {
     onClose();
-  }, [pathname, onClose]);
+  }, [pathname]);
 
   return (
     <>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <Button>Open Modal</Button>
+        {/* <Button>Open Modal</Button> */}
+        <ButtonPrimitive className="w-full max-w-lg">
+          <SearchField
+            placeholder="Search"
+            isReadOnly={true}
+            className="m-auto w-full max-w-lg"
+            aria-label="Rechercher un produit"
+            value={query}
+            onChange={(value) => setQuery(value)}
+          />
+        </ButtonPrimitive>
         <Modal.Content>
           <Modal.Header>
             <Modal.Title>{`Bug reproduction (state:${
@@ -36,7 +67,7 @@ export const SharedModal = () => {
           </Modal.Body>
           <Modal.Footer>
             <Modal.Close>Close</Modal.Close>
-            <Button>Confirm</Button>
+            <Button onPress={onClose}>Confirm</Button>
           </Modal.Footer>
         </Modal.Content>
       </Modal>
